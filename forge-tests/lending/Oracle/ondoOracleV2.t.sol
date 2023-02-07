@@ -3,7 +3,6 @@ import "forge-tests/lending/DeployBasicLendingMarket.t.sol";
 import "forge-tests/lending/helpers/interfaces/IOwnable.sol";
 import "forge-tests/lending/helpers/test/MockChainlinkPriceOracle.sol";
 import "contracts/lending/OndoPriceOracleV2.sol";
-import "forge-std/console.sol";
 
 contract Test_Oracle_V2 is TestOndoOracleEvents, BasicLendingMarket {
   OndoPriceOracleV2 ondoOracleV2;

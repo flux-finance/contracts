@@ -1,7 +1,7 @@
 pragma solidity 0.8.16;
-import "contracts/cash/external/openzeppelin/contracts/token/IERC20.sol";
+import "contracts/external/openzeppelin/contracts/token/IERC20.sol";
 import "contracts/lending/ondo/ondo-token/IOndo.sol";
-import "forge-tests/cash/helpers/ISanctionsOracle.sol";
+import "forge-tests/helpers/ISanctionsOracle.sol";
 
 // Known production mainnet addresses with large balances that we can impersonate for testing.
 contract Whales {

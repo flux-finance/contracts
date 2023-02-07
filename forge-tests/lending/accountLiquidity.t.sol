@@ -25,8 +25,8 @@ contract Test_Lending_Market_Account_Liquidity is BasicLendingMarket {
   }
 
   function test_supplyRatePerBlock_on_init_fCASH() public {
-    enterMarkets(charlie, address(fCASH), 100e18);
-    uint256 supplyRateCash = fCASH.supplyRatePerBlock();
+    enterMarkets(charlie, address(fUSDC), 100e6);
+    uint256 supplyRateCash = fUSDC.supplyRatePerBlock();
     assertEq(supplyRateCash, 0);
   }
 

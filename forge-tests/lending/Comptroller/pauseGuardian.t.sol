@@ -31,7 +31,7 @@ contract Test_Lending_Market_Seize_Token_Amount is BasicLendingMarket {
 
   function test_pauseGuardian() public {
     oComptroller._setPauseGuardian(alice);
-    enterMarkets(charlie, address(fCASH), 100e18);
+    enterMarkets(charlie, address(fDAI), 100e18);
 
     vm.startPrank(alice);
     vm.expectEmit(true, true, true, true);
@@ -45,12 +45,12 @@ contract Test_Lending_Market_Seize_Token_Amount is BasicLendingMarket {
 
     vm.prank(charlie);
     vm.expectRevert(bytes("transfer is paused"));
-    fCASH.transfer(bob, 100e8);
+    fDAI.transfer(bob, 100e8);
 
     oComptroller._setTransferPaused(false);
     vm.prank(charlie);
-    fCASH.transfer(bob, 100e8);
-    uint256 bobBal = fCASH.balanceOf(bob);
+    fDAI.transfer(bob, 100e8);
+    uint256 bobBal = fDAI.balanceOf(bob);
   }
 
   function test_pauseGuardian_can_pause_seizures() public {
@@ -81,15 +81,15 @@ contract Test_Lending_Market_Seize_Token_Amount is BasicLendingMarket {
 
     vm.startPrank(alice);
     vm.expectEmit(true, true, true, true);
-    emit ActionPaused(address(fCASH), "Mint", true);
-    oComptroller._setMintPaused(address(fCASH), true);
+    emit ActionPaused(address(fUSDC), "Mint", true);
+    oComptroller._setMintPaused(address(fUSDC), true);
 
     vm.expectRevert(bytes("only admin can unpause"));
-    oComptroller._setMintPaused(address(fCASH), false);
+    oComptroller._setMintPaused(address(fUSDC), false);
     vm.stopPrank();
 
     vm.expectRevert(bytes("mint is paused"));
-    oComptroller.mintAllowed(address(fCASH), address(alice), 100e18);
+    oComptroller.mintAllowed(address(fUSDC), address(alice), 100e18);
   }
 
   function test_pauseGuardian_can_pause_borrows() public {
@@ -97,16 +97,16 @@ contract Test_Lending_Market_Seize_Token_Amount is BasicLendingMarket {
 
     vm.startPrank(alice);
     vm.expectEmit(true, true, true, true);
-    emit ActionPaused(address(fCASH), "Borrow", true);
-    bool reply = oComptroller._setBorrowPaused(address(fCASH), true);
+    emit ActionPaused(address(fDAI), "Borrow", true);
+    bool reply = oComptroller._setBorrowPaused(address(fDAI), true);
     assertEq(reply, true);
 
     vm.expectRevert(bytes("only admin can unpause"));
-    oComptroller._setMintPaused(address(fCASH), false);
+    oComptroller._setMintPaused(address(fDAI), false);
     vm.stopPrank();
 
     vm.expectRevert(bytes("borrow is paused"));
-    oComptroller.borrowAllowed(address(fCASH), bob, 10e6);
+    oComptroller.borrowAllowed(address(fDAI), bob, 10e6);
   }
 
   event NewPauseGuardian(address oldPauseGuardian, address pauseGuardian);

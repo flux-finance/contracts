@@ -136,7 +136,7 @@ abstract contract Test_fTokenModified is Test_fToken_Basic {
   }
 
   function test_repayBorrowBehalf_fail_KYC_borrower_cashCollateral() public {
-    enterMarkets(charlie, address(fCASH), 100e18);
+    enterMarkets(charlie, address(fCASH), 1e18);
     seedLendingPool(address(fToken));
     _addAddressToKYC(kycRequirementGroup, charlie);
     vm.prank(charlie);

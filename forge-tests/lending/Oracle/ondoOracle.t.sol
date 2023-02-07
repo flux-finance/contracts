@@ -38,13 +38,6 @@ contract Test_Oracle_V1 is TestOndoOracleEvents, BasicLendingMarket {
     assertAlmostEqBps(oraclePriceUnderlying_fDAI, 1e18, 100);
   }
 
-  function test_returnCorrectPrice_fCASH() public {
-    uint256 oraclePriceUnderlying_fCASH = ondoOracle.getUnderlyingPrice(
-      address(fCASH)
-    );
-    assertEq(oraclePriceUnderlying_fCASH, 100e18);
-  }
-
   function test_setPrice_fail_nonAdmin() public {
     vm.startPrank(alice);
     vm.expectRevert(bytes("Only callable by owner"));
@@ -53,10 +46,10 @@ contract Test_Oracle_V1 is TestOndoOracleEvents, BasicLendingMarket {
 
   function test_setPrice() public {
     vm.expectEmit(true, true, true, true);
-    emit UnderlyingPriceSet(address(fCASH), 100e18, 110e18);
-    ondoOracle.setPrice(address(fCASH), 110e18);
-    assertEq(ondoOracle.fTokenToUnderlyingPrice(address(fCASH)), 110e18);
-    uint256 result = ondoOracle.getUnderlyingPrice(address(fCASH));
+    emit UnderlyingPriceSet(address(fDAI), 0, 110e18);
+    ondoOracle.setPrice(address(fDAI), 110e18);
+    assertEq(ondoOracle.fTokenToUnderlyingPrice(address(fDAI)), 110e18);
+    uint256 result = ondoOracle.getUnderlyingPrice(address(fDAI));
     assertEq(result, 110e18);
   }
 

@@ -71,14 +71,14 @@ contract Test_Comptroller is BasicLendingMarket {
   }
 
   function test_setBorrowPaused() public {
-    bool result = oComptroller._setBorrowPaused(address(fCASH), true);
+    bool result = oComptroller._setBorrowPaused(address(fUSDC), true);
     assertEq(result, true); // Assert that the lending market has paused borrows
   }
 
   function test_setCollateralFactor_to_max() public {
     vm.expectEmit(true, true, true, true);
-    emit NewCollateralFactor(address(fCASH), .92e18, .98e18);
-    uint256 result = oComptroller._setCollateralFactor(address(fCASH), .98e18);
+    emit NewCollateralFactor(address(fUSDC), .85e18, .98e18);
+    uint256 result = oComptroller._setCollateralFactor(address(fUSDC), .98e18);
     assertEq(result, 0); // Assert no error was thrown
   }
 
@@ -87,18 +87,18 @@ contract Test_Comptroller is BasicLendingMarket {
       ComptrollerErrorReporter.Error.INVALID_COLLATERAL_FACTOR,
       ComptrollerErrorReporter.FailureInfo.SET_COLLATERAL_FACTOR_VALIDATION
     );
-    oComptroller._setCollateralFactor(address(fCASH), .99e18);
+    oComptroller._setCollateralFactor(address(fUSDC), .99e18);
   }
 
   function test_borrow_fail_paused() public {
-    oComptroller._setBorrowPaused(address(fCASH), true);
+    oComptroller._setBorrowPaused(address(fUSDC), true);
     _addAddressToKYC(kycRequirementGroup, charlie);
     enterMarkets(charlie, address(fDAI), 100e18);
     _addAddressToKYC(kycRequirementGroup, alice);
-    enterMarkets(alice, address(fCASH), 100e18);
+    enterMarkets(alice, address(fUSDC), 100e6);
     vm.prank(charlie);
     vm.expectRevert("borrow is paused");
-    fCASH.borrow(1e18);
+    fUSDC.borrow(1e18);
   }
 
   function test_setCollateralFactor_fail_asset_not_listed() public {
@@ -114,26 +114,26 @@ contract Test_Comptroller is BasicLendingMarket {
     IOndoOracle mockOracle = IOndoOracle(
       deployCode(
         "MockPriceOracle.sol:MockPriceOracle",
-        abi.encode(address(fCASH))
+        abi.encode(address(fUSDC))
       )
     );
-    mockOracle.setPrice(address(fCASH), 0);
+    mockOracle.setPrice(address(fUSDC), 0);
     mockOracle.setPrice(address(fDAI), 1000027000000000000);
     oComptroller._setPriceOracle(address(mockOracle));
     _expectFail(
       ComptrollerErrorReporter.Error.PRICE_ERROR,
       ComptrollerErrorReporter.FailureInfo.SET_COLLATERAL_FACTOR_WITHOUT_PRICE
     );
-    oComptroller._setCollateralFactor(address(fCASH), 0.75e18);
+    oComptroller._setCollateralFactor(address(fUSDC), 0.75e18);
   }
 
   function test_setCollateralFactor() public {
     vm.expectEmit(true, true, true, true);
-    emit NewCollateralFactor(address(fCASH), 0.92e18, 0.85e18);
-    uint256 reply = oComptroller._setCollateralFactor(address(fCASH), 0.85e18);
+    emit NewCollateralFactor(address(fUSDC), 0.85e18, 0.92e18);
+    uint256 reply = oComptroller._setCollateralFactor(address(fUSDC), 0.92e18);
     assertEq(reply, 0);
-    (, uint collateralFactorMantissa) = oComptroller.markets(address(fCASH));
-    assertEq(collateralFactorMantissa, 0.85e18);
+    (, uint collateralFactorMantissa) = oComptroller.markets(address(fUSDC));
+    assertEq(collateralFactorMantissa, 0.92e18);
   }
 
   function test_supportMarket_access_control() public {
@@ -156,7 +156,7 @@ contract Test_Comptroller is BasicLendingMarket {
       ComptrollerErrorReporter.Error.MARKET_ALREADY_LISTED,
       ComptrollerErrorReporter.FailureInfo.SUPPORT_MARKET_EXISTS
     );
-    oComptroller._supportMarket(address(fCASH));
+    oComptroller._supportMarket(address(fDAI));
   }
 
   event NewCollateralFactor(

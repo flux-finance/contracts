@@ -4,8 +4,10 @@ pragma solidity 0.8.16;
 import "forge-tests/lending/helpers/interfaces/IUnitroller.sol";
 import "forge-tests/lending/helpers/interfaces/ICompoundLens.sol";
 import "contracts/lending/ondo/ondo-token/IOndo.sol";
-import "contracts/cash/external/openzeppelin/contracts/token/SafeERC20.sol";
+import "contracts/external/openzeppelin/contracts/token/SafeERC20.sol";
 import "forge-tests/lending/helpers/fTokenDeployment.t.sol";
+import "forge-tests/common/constants.sol";
+import "forge-tests/helpers/IKYCRegistry.sol";
 
 // Governance stuff
 import "forge-tests/lending/helpers/interfaces/IGovernorBravoHarness.sol";
@@ -16,11 +18,20 @@ import "forge-tests/lending/helpers/interfaces/ITimelock.sol";
 contract BasicLendingMarket is fTokenDeploy {
   using SafeERC20 for IERC20;
 
+  address constant guardian = address(0x9999990);
+  address constant alice = address(0x9999991);
+  address constant bob = address(0x9999992);
+  address constant charlie = address(0x9999993);
+  address constant registryAdmin = address(0x9999994);
+  address constant managerAdmin = address(0x9999995);
+  address constant pauser = address(0x9999996);
+  address constant assetSender = address(0x9999997);
+  address constant assetRecipient = 0xF67416a2C49f6A46FEe1c47681C5a3832cf8856c;
+  address constant feeRecipient = address(0x9999999);
+
   IGovernorBravoDelegate governorProxied;
   address[] markets;
   ICompoundLens lens;
-
-  ERC20PresetMinterPauserUpgradeable mockCash;
 
   function setUp() public virtual {
     // deployBasic_nonUpgradable_LendingMarket();
@@ -30,11 +41,6 @@ contract BasicLendingMarket is fTokenDeploy {
   }
 
   function deploy_upgradable_Comptroller_LendingMarket() public {
-    // Deploy KYC Registry, CASH, and CashManager
-    deployKYCRegistry();
-    deployCashKYCSenderReceiverToken();
-    deployCashManagerWithToken(address(cashKYCSenderReceiverProxied));
-
     // Deploy the interest rate model
     deployIRmodel();
 
@@ -66,9 +72,10 @@ contract BasicLendingMarket is fTokenDeploy {
     deployfLusd();
     deployfUsdt();
 
-    _addAddressToKYC(kycRequirementGroup, address(fCASH));
+    // _addAddressToKYC(kycRequirementGroup, address(fCASH));
     _addAddressToKYC(kycRequirementGroup, guardian);
     _addAddressToKYC(kycRequirementGroup, bob);
+    _addAddressToKYC(kycRequirementGroup, address(this));
 
     // Admin functions for comptroller contract
 
@@ -82,7 +89,7 @@ contract BasicLendingMarket is fTokenDeploy {
     oComptroller._setCollateralFactor(address(fUSDC), 85 * 1e16);
     oComptroller._setCollateralFactor(address(fDAI), 83 * 1e16);
     // Pause borrow for fCASH
-    oComptroller._setBorrowPaused(address(fCASH), true);
+    // oComptroller._setBorrowPaused(address(fCASH), true);
 
     // Add labels
     vm.label(alice, "alice");
@@ -97,10 +104,9 @@ contract BasicLendingMarket is fTokenDeploy {
   ) public {
     if (marketToEnter == address(fCASH)) {
       _addAddressToKYC(kycRequirementGroup, user);
-      vm.prank(guardian);
-      cashKYCSenderReceiverProxied.mint(user, amount);
+      mockCash.mint(user, amount);
       vm.startPrank(user);
-      cashKYCSenderReceiverProxied.approve(address(fCASH), amount);
+      mockCash.approve(address(fCASH), amount);
       fCASH.mint(amount);
       markets.push(address(fCASH));
       oComptroller.enterMarkets(markets);
@@ -315,6 +321,28 @@ contract BasicLendingMarket is fTokenDeploy {
   ) internal {
     vm.expectEmit(true, true, true, true);
     emit Failure(uint256(err), uint256(info), 0);
+  }
+
+  function _addAddressToKYC(uint256 level, address account) internal {
+    address[] memory addressesToKYC = new address[](1);
+    addressesToKYC[0] = account;
+    vm.prank(0xAEd4caF2E535D964165B4392342F71bac77e8367);
+    IKYCRegistry(registry).addKYCAddresses(level, addressesToKYC);
+  }
+
+
+  function _addAddressToSanctionsList(address sanctionedAccount) internal {
+    address[] memory newSanctions = new address[](1);
+    newSanctions[0] = sanctionedAccount;
+    vm.prank(SANCTIONS_ORACLE.owner());
+    SANCTIONS_ORACLE.addToSanctionsList(newSanctions);
+  }
+
+  function _removeAddressFromKYC(uint256 level, address account) internal {
+    address[] memory addressesToRemoveKYC = new address[](1);
+    addressesToRemoveKYC[0] = account;
+    vm.prank(0xAEd4caF2E535D964165B4392342F71bac77e8367);
+    IKYCRegistry(registry).removeKYCAddresses(level, addressesToRemoveKYC);
   }
 
   event Failure(uint error, uint info, uint detail);

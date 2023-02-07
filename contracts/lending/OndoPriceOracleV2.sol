@@ -16,7 +16,7 @@
 pragma solidity 0.8.16;
 
 import "./IOndoPriceOracleV2.sol";
-import "contracts/cash/external/openzeppelin/contracts/access/Ownable.sol";
+import "contracts/external/openzeppelin/contracts/access/Ownable.sol";
 import "contracts/lending/chainlink/AggregatorV3Interface.sol";
 
 /// @notice Interface for generalizing different cToken oracles

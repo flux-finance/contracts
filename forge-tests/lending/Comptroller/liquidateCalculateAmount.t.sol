@@ -29,17 +29,17 @@ contract Test_Liquidate_Seize_Token_Amount is BasicLendingMarket {
     vm.expectRevert(bytes("multiplication overflow"));
     oComptroller.liquidateCalculateSeizeTokens(
       address(fDAI),
-      address(fCASH),
+      address(fUSDC),
       type(uint256).max
     );
   }
 
   function test_liquidateCalculateAmountSeize_fail_price_overflow() public {
-    ondoOracle.setPrice(address(fCASH), type(uint256).max);
+    ondoOracle.setPrice(address(fUSDC), type(uint256).max);
     vm.expectRevert(bytes("multiplication overflow"));
     oComptroller.liquidateCalculateSeizeTokens(
       address(fDAI),
-      address(fCASH),
+      address(fUSDC),
       1e18
     );
   }

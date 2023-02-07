@@ -1,6 +1,7 @@
 pragma solidity 0.8.16;
 
 import "forge-tests/lending/DeployBasicLendingMarket.t.sol";
+import "contracts/external/openzeppelin/contracts/token/IERC20Metadata.sol";
 
 // Basic checks for all fTokens (fCASH and fToken)
 abstract contract Test_fToken_Basic is BasicLendingMarket {
@@ -116,19 +117,6 @@ abstract contract Test_fToken_Basic is BasicLendingMarket {
     fToken.setKYCRegistry(address(0));
   }
 
-  function test_setKYCRegistry() public {
-    // Deploy New KYC Registry
-    address oldRegistry = address(registry);
-    deployKYCRegistry();
-    assert(address(registry) != oldRegistry);
-
-    // Set KYC Registry
-    vm.expectEmit(true, true, true, true);
-    emit KYCRegistrySet(oldRegistry, address(registry));
-    fToken.setKYCRegistry(address(registry));
-    assertEq(fToken.kycRegistry(), address(registry));
-  }
-
   function test_fToken_kyc_kycRequirementGroup_fail_accessControl() public {
     vm.expectRevert("Only admin can set KYC requirement group");
     vm.prank(charlie);
@@ -136,8 +124,6 @@ abstract contract Test_fToken_Basic is BasicLendingMarket {
   }
 
   function test_fToken_kyc_kycRequirementGroup() public {
-    vm.expectEmit(true, true, true, true);
-    emit KYCRequirementGroupSet(kycRequirementGroup, kycRequirementGroup + 1);
     fToken.setKYCRequirementGroup(kycRequirementGroup + 1);
   }
 }

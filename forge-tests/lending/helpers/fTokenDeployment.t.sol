@@ -4,10 +4,16 @@ pragma solidity 0.8.16;
 // fDAI + fCASH
 import "forge-tests/lending/helpers/interfaces/ICToken.sol";
 import "forge-tests/lending/helpers/interfaces/IOndoOracle.sol";
-import "../../cash/BasicDeployment.sol";
 import "forge-tests/lending/helpers/interfaces/IComptroller.sol";
+import "forge-tests/helpers/DSTestPlus.sol";
+import "forge-tests/common/constants.sol";
+import "lib/forge-std/src/StdCheats.sol";
+import "contracts/external/openzeppelin/contracts-upgradeable/token/ERC20/ERC20PresetMinterPauserUpgradeable.sol";
 
-contract fTokenDeploy is BasicDeployment {
+contract fTokenDeploy is StdCheatsSafe, DSTestPlus, Whales, Tokens, CTokens, Oracles {
+  address registry = 0x7cE91291846502D50D635163135B2d40a602dc70;
+  uint256 kycRequirementGroup = 1;
+  ERC20PresetMinterPauserUpgradeable mockCash = new ERC20PresetMinterPauserUpgradeable();
   ICToken fDAI;
   ICToken fCASH;
   ICToken fUSDC;
@@ -32,12 +38,13 @@ contract fTokenDeploy is BasicDeployment {
   }
 
   function deployfCash() public {
+    mockCash.initialize("mockCASH", "mCASH");
     // Deploy cCASH implementation & delegate
     address cCashImplementation = deployCode("CCashDelegate.sol:CCashDelegate");
     address cCashDelegate = deployCode(
       "cErc20ModifiedDelegator.sol:CErc20DelegatorKYC",
       abi.encode(
-        address(cashKYCSenderReceiverProxied),
+        address(mockCash),
         address(oComptroller),
         address(interestRateModel),
         200000000000000000000000000,
