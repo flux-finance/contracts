@@ -155,24 +155,12 @@ To support V2 Deployment assets, we must update the oracle and set the `OracleTy
 - Run `yarn init-repo`
 
 ## Commands
-
-- Start a local blockchain: `yarn local-node`
-  - The scripts found under `scripts/<cash or lending>/ci/event_coverage.ts` aim to interact with the contracts in a way that maximizes the count of distinct event types emitted. For example:
-
-```sh
-yarn hardhat run --network localhost scripts/<cash or lending>/ci/event_coverage.ts
-```
-
 - Run Tests: `yarn test-forge`
-
-  - Run Cash Tests: `yarn test-forge-cash`
-  - Run Flux Tests: `yarn test-forge-lending`
-
 - Generate Gas Report: `yarn test-forge --gas-report`
 
 ## Writing Tests and Forge Scripts
 
-For testing with Foundry, `forge-tests/lending/DeployBasicLendingMarket.t.sol` & `forge-tests/BasicDeployment.sol` were added to allow for users to easily deploy and setup the CASH/CASH+ dapp, and Flux lending market for local testing.
+For testing with Foundry, `forge-tests/lending/DeployBasicLendingMarket.t.sol` was added to allow for users to easily deploy and setup the Flux lending market for local testing.
 
 To setup and write tests for contracts within foundry from a deployed state please include the following layout within your testing file. Helper functions are provided within each of these respective setup files.
 
