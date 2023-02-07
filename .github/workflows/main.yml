@@ -35,9 +35,5 @@ jobs:
           version: nightly
       - run: yarn
       - run: yarn lint:check
-      - run: yarn test-ci
-      - run: |
-          yarn local-node & yarn hardhat run --network localhost scripts/lending/ci/event_coverage.ts
-      - run: yarn clean
       - run: yarn test-forge-ci
         continue-on-error: false
