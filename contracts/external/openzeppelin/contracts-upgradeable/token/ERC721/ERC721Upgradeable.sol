@@ -48,17 +48,17 @@ contract ERC721Upgradeable is
   /**
    * @dev Initializes the contract by setting a `name` and a `symbol` to the token collection.
    */
-  function __ERC721_init(string memory name_, string memory symbol_)
-    internal
-    onlyInitializing
-  {
+  function __ERC721_init(
+    string memory name_,
+    string memory symbol_
+  ) internal onlyInitializing {
     __ERC721_init_unchained(name_, symbol_);
   }
 
-  function __ERC721_init_unchained(string memory name_, string memory symbol_)
-    internal
-    onlyInitializing
-  {
+  function __ERC721_init_unchained(
+    string memory name_,
+    string memory symbol_
+  ) internal onlyInitializing {
     _name = name_;
     _symbol = symbol_;
   }
@@ -66,7 +66,9 @@ contract ERC721Upgradeable is
   /**
    * @dev See {IERC165-supportsInterface}.
    */
-  function supportsInterface(bytes4 interfaceId)
+  function supportsInterface(
+    bytes4 interfaceId
+  )
     public
     view
     virtual
@@ -82,13 +84,9 @@ contract ERC721Upgradeable is
   /**
    * @dev See {IERC721-balanceOf}.
    */
-  function balanceOf(address owner)
-    public
-    view
-    virtual
-    override
-    returns (uint256)
-  {
+  function balanceOf(
+    address owner
+  ) public view virtual override returns (uint256) {
     require(owner != address(0), "ERC721: address zero is not a valid owner");
     return _balances[owner];
   }
@@ -96,13 +94,9 @@ contract ERC721Upgradeable is
   /**
    * @dev See {IERC721-ownerOf}.
    */
-  function ownerOf(uint256 tokenId)
-    public
-    view
-    virtual
-    override
-    returns (address)
-  {
+  function ownerOf(
+    uint256 tokenId
+  ) public view virtual override returns (address) {
     address owner = _owners[tokenId];
     require(owner != address(0), "ERC721: invalid token ID");
     return owner;
@@ -125,13 +119,9 @@ contract ERC721Upgradeable is
   /**
    * @dev See {IERC721Metadata-tokenURI}.
    */
-  function tokenURI(uint256 tokenId)
-    public
-    view
-    virtual
-    override
-    returns (string memory)
-  {
+  function tokenURI(
+    uint256 tokenId
+  ) public view virtual override returns (string memory) {
     _requireMinted(tokenId);
 
     string memory baseURI = _baseURI();
@@ -168,13 +158,9 @@ contract ERC721Upgradeable is
   /**
    * @dev See {IERC721-getApproved}.
    */
-  function getApproved(uint256 tokenId)
-    public
-    view
-    virtual
-    override
-    returns (address)
-  {
+  function getApproved(
+    uint256 tokenId
+  ) public view virtual override returns (address) {
     _requireMinted(tokenId);
 
     return _tokenApprovals[tokenId];
@@ -183,24 +169,20 @@ contract ERC721Upgradeable is
   /**
    * @dev See {IERC721-setApprovalForAll}.
    */
-  function setApprovalForAll(address operator, bool approved)
-    public
-    virtual
-    override
-  {
+  function setApprovalForAll(
+    address operator,
+    bool approved
+  ) public virtual override {
     _setApprovalForAll(_msgSender(), operator, approved);
   }
 
   /**
    * @dev See {IERC721-isApprovedForAll}.
    */
-  function isApprovedForAll(address owner, address operator)
-    public
-    view
-    virtual
-    override
-    returns (bool)
-  {
+  function isApprovedForAll(
+    address owner,
+    address operator
+  ) public view virtual override returns (bool) {
     return _operatorApprovals[owner][operator];
   }
 
@@ -298,12 +280,10 @@ contract ERC721Upgradeable is
    *
    * - `tokenId` must exist.
    */
-  function _isApprovedOrOwner(address spender, uint256 tokenId)
-    internal
-    view
-    virtual
-    returns (bool)
-  {
+  function _isApprovedOrOwner(
+    address spender,
+    uint256 tokenId
+  ) internal view virtual returns (bool) {
     address owner = ERC721Upgradeable.ownerOf(tokenId);
     return (spender == owner ||
       isApprovedForAll(owner, spender) ||

@@ -33,11 +33,10 @@ contract ERC20PresetMinterPauserUpgradeable is
   ERC20BurnableUpgradeable,
   ERC20PausableUpgradeable
 {
-  function initialize(string memory name, string memory symbol)
-    public
-    virtual
-    initializer
-  {
+  function initialize(
+    string memory name,
+    string memory symbol
+  ) public virtual initializer {
     __ERC20PresetMinterPauser_init(name, symbol);
   }
 

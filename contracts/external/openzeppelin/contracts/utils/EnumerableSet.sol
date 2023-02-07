@@ -106,11 +106,10 @@ library EnumerableSet {
   /**
    * @dev Returns true if the value is in the set. O(1).
    */
-  function _contains(Set storage set, bytes32 value)
-    private
-    view
-    returns (bool)
-  {
+  function _contains(
+    Set storage set,
+    bytes32 value
+  ) private view returns (bool) {
     return set._indexes[value] != 0;
   }
 
@@ -169,21 +168,20 @@ library EnumerableSet {
    * Returns true if the value was removed from the set, that is if it was
    * present.
    */
-  function remove(Bytes32Set storage set, bytes32 value)
-    internal
-    returns (bool)
-  {
+  function remove(
+    Bytes32Set storage set,
+    bytes32 value
+  ) internal returns (bool) {
     return _remove(set._inner, value);
   }
 
   /**
    * @dev Returns true if the value is in the set. O(1).
    */
-  function contains(Bytes32Set storage set, bytes32 value)
-    internal
-    view
-    returns (bool)
-  {
+  function contains(
+    Bytes32Set storage set,
+    bytes32 value
+  ) internal view returns (bool) {
     return _contains(set._inner, value);
   }
 
@@ -204,11 +202,10 @@ library EnumerableSet {
    *
    * - `index` must be strictly less than {length}.
    */
-  function at(Bytes32Set storage set, uint256 index)
-    internal
-    view
-    returns (bytes32)
-  {
+  function at(
+    Bytes32Set storage set,
+    uint256 index
+  ) internal view returns (bytes32) {
     return _at(set._inner, index);
   }
 
@@ -220,11 +217,9 @@ library EnumerableSet {
    * this function has an unbounded cost, and using it as part of a state-changing function may render the function
    * uncallable if the set grows to a point where copying to memory consumes too much gas to fit in a block.
    */
-  function values(Bytes32Set storage set)
-    internal
-    view
-    returns (bytes32[] memory)
-  {
+  function values(
+    Bytes32Set storage set
+  ) internal view returns (bytes32[] memory) {
     return _values(set._inner);
   }
 
@@ -250,21 +245,20 @@ library EnumerableSet {
    * Returns true if the value was removed from the set, that is if it was
    * present.
    */
-  function remove(AddressSet storage set, address value)
-    internal
-    returns (bool)
-  {
+  function remove(
+    AddressSet storage set,
+    address value
+  ) internal returns (bool) {
     return _remove(set._inner, bytes32(uint256(uint160(value))));
   }
 
   /**
    * @dev Returns true if the value is in the set. O(1).
    */
-  function contains(AddressSet storage set, address value)
-    internal
-    view
-    returns (bool)
-  {
+  function contains(
+    AddressSet storage set,
+    address value
+  ) internal view returns (bool) {
     return _contains(set._inner, bytes32(uint256(uint160(value))));
   }
 
@@ -285,11 +279,10 @@ library EnumerableSet {
    *
    * - `index` must be strictly less than {length}.
    */
-  function at(AddressSet storage set, uint256 index)
-    internal
-    view
-    returns (address)
-  {
+  function at(
+    AddressSet storage set,
+    uint256 index
+  ) internal view returns (address) {
     return address(uint160(uint256(_at(set._inner, index))));
   }
 
@@ -301,11 +294,9 @@ library EnumerableSet {
    * this function has an unbounded cost, and using it as part of a state-changing function may render the function
    * uncallable if the set grows to a point where copying to memory consumes too much gas to fit in a block.
    */
-  function values(AddressSet storage set)
-    internal
-    view
-    returns (address[] memory)
-  {
+  function values(
+    AddressSet storage set
+  ) internal view returns (address[] memory) {
     bytes32[] memory store = _values(set._inner);
     address[] memory result;
 
@@ -345,11 +336,10 @@ library EnumerableSet {
   /**
    * @dev Returns true if the value is in the set. O(1).
    */
-  function contains(UintSet storage set, uint256 value)
-    internal
-    view
-    returns (bool)
-  {
+  function contains(
+    UintSet storage set,
+    uint256 value
+  ) internal view returns (bool) {
     return _contains(set._inner, bytes32(value));
   }
 
@@ -370,11 +360,10 @@ library EnumerableSet {
    *
    * - `index` must be strictly less than {length}.
    */
-  function at(UintSet storage set, uint256 index)
-    internal
-    view
-    returns (uint256)
-  {
+  function at(
+    UintSet storage set,
+    uint256 index
+  ) internal view returns (uint256) {
     return uint256(_at(set._inner, index));
   }
 
@@ -386,11 +375,9 @@ library EnumerableSet {
    * this function has an unbounded cost, and using it as part of a state-changing function may render the function
    * uncallable if the set grows to a point where copying to memory consumes too much gas to fit in a block.
    */
-  function values(UintSet storage set)
-    internal
-    view
-    returns (uint256[] memory)
-  {
+  function values(
+    UintSet storage set
+  ) internal view returns (uint256[] memory) {
     bytes32[] memory store = _values(set._inner);
     uint256[] memory result;
 

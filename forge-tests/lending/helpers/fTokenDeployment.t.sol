@@ -10,10 +10,18 @@ import "forge-tests/common/constants.sol";
 import "lib/forge-std/src/StdCheats.sol";
 import "contracts/external/openzeppelin/contracts-upgradeable/token/ERC20/ERC20PresetMinterPauserUpgradeable.sol";
 
-contract fTokenDeploy is StdCheatsSafe, DSTestPlus, Whales, Tokens, CTokens, Oracles {
+contract fTokenDeploy is
+  StdCheatsSafe,
+  DSTestPlus,
+  Whales,
+  Tokens,
+  CTokens,
+  Oracles
+{
   address registry = 0x7cE91291846502D50D635163135B2d40a602dc70;
   uint256 kycRequirementGroup = 1;
-  ERC20PresetMinterPauserUpgradeable mockCash = new ERC20PresetMinterPauserUpgradeable();
+  ERC20PresetMinterPauserUpgradeable mockCash =
+    new ERC20PresetMinterPauserUpgradeable();
   ICToken fDAI;
   ICToken fCASH;
   ICToken fUSDC;

@@ -85,10 +85,10 @@ library AddressUpgradeable {
    *
    * _Available since v3.1._
    */
-  function functionCall(address target, bytes memory data)
-    internal
-    returns (bytes memory)
-  {
+  function functionCall(
+    address target,
+    bytes memory data
+  ) internal returns (bytes memory) {
     return functionCall(target, data, "Address: low-level call failed");
   }
 
@@ -159,11 +159,10 @@ library AddressUpgradeable {
    *
    * _Available since v3.3._
    */
-  function functionStaticCall(address target, bytes memory data)
-    internal
-    view
-    returns (bytes memory)
-  {
+  function functionStaticCall(
+    address target,
+    bytes memory data
+  ) internal view returns (bytes memory) {
     return
       functionStaticCall(target, data, "Address: low-level static call failed");
   }

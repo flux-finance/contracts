@@ -330,7 +330,6 @@ contract BasicLendingMarket is fTokenDeploy {
     IKYCRegistry(registry).addKYCAddresses(level, addressesToKYC);
   }
 
-
   function _addAddressToSanctionsList(address sanctionedAccount) internal {
     address[] memory newSanctions = new address[](1);
     newSanctions[0] = sanctionedAccount;

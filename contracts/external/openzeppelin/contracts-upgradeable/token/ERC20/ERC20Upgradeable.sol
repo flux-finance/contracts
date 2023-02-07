@@ -57,17 +57,17 @@ contract ERC20Upgradeable is
    * All two of these values are immutable: they can only be set once during
    * construction.
    */
-  function __ERC20_init(string memory name_, string memory symbol_)
-    internal
-    onlyInitializing
-  {
+  function __ERC20_init(
+    string memory name_,
+    string memory symbol_
+  ) internal onlyInitializing {
     __ERC20_init_unchained(name_, symbol_);
   }
 
-  function __ERC20_init_unchained(string memory name_, string memory symbol_)
-    internal
-    onlyInitializing
-  {
+  function __ERC20_init_unchained(
+    string memory name_,
+    string memory symbol_
+  ) internal onlyInitializing {
     _name = name_;
     _symbol = symbol_;
   }
@@ -114,13 +114,9 @@ contract ERC20Upgradeable is
   /**
    * @dev See {IERC20-balanceOf}.
    */
-  function balanceOf(address account)
-    public
-    view
-    virtual
-    override
-    returns (uint256)
-  {
+  function balanceOf(
+    address account
+  ) public view virtual override returns (uint256) {
     return _balances[account];
   }
 
@@ -132,12 +128,10 @@ contract ERC20Upgradeable is
    * - `to` cannot be the zero address.
    * - the caller must have a balance of at least `amount`.
    */
-  function transfer(address to, uint256 amount)
-    public
-    virtual
-    override
-    returns (bool)
-  {
+  function transfer(
+    address to,
+    uint256 amount
+  ) public virtual override returns (bool) {
     address owner = _msgSender();
     _transfer(owner, to, amount);
     return true;
@@ -146,13 +140,10 @@ contract ERC20Upgradeable is
   /**
    * @dev See {IERC20-allowance}.
    */
-  function allowance(address owner, address spender)
-    public
-    view
-    virtual
-    override
-    returns (uint256)
-  {
+  function allowance(
+    address owner,
+    address spender
+  ) public view virtual override returns (uint256) {
     return _allowances[owner][spender];
   }
 
@@ -166,12 +157,10 @@ contract ERC20Upgradeable is
    *
    * - `spender` cannot be the zero address.
    */
-  function approve(address spender, uint256 amount)
-    public
-    virtual
-    override
-    returns (bool)
-  {
+  function approve(
+    address spender,
+    uint256 amount
+  ) public virtual override returns (bool) {
     address owner = _msgSender();
     _approve(owner, spender, amount);
     return true;
@@ -216,11 +205,10 @@ contract ERC20Upgradeable is
    *
    * - `spender` cannot be the zero address.
    */
-  function increaseAllowance(address spender, uint256 addedValue)
-    public
-    virtual
-    returns (bool)
-  {
+  function increaseAllowance(
+    address spender,
+    uint256 addedValue
+  ) public virtual returns (bool) {
     address owner = _msgSender();
     _approve(owner, spender, allowance(owner, spender) + addedValue);
     return true;
@@ -240,11 +228,10 @@ contract ERC20Upgradeable is
    * - `spender` must have allowance for the caller of at least
    * `subtractedValue`.
    */
-  function decreaseAllowance(address spender, uint256 subtractedValue)
-    public
-    virtual
-    returns (bool)
-  {
+  function decreaseAllowance(
+    address spender,
+    uint256 subtractedValue
+  ) public virtual returns (bool) {
     address owner = _msgSender();
     uint256 currentAllowance = allowance(owner, spender);
     require(

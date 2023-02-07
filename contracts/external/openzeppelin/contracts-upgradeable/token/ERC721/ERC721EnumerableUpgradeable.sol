@@ -36,7 +36,9 @@ abstract contract ERC721EnumerableUpgradeable is
   /**
    * @dev See {IERC165-supportsInterface}.
    */
-  function supportsInterface(bytes4 interfaceId)
+  function supportsInterface(
+    bytes4 interfaceId
+  )
     public
     view
     virtual
@@ -51,13 +53,10 @@ abstract contract ERC721EnumerableUpgradeable is
   /**
    * @dev See {IERC721Enumerable-tokenOfOwnerByIndex}.
    */
-  function tokenOfOwnerByIndex(address owner, uint256 index)
-    public
-    view
-    virtual
-    override
-    returns (uint256)
-  {
+  function tokenOfOwnerByIndex(
+    address owner,
+    uint256 index
+  ) public view virtual override returns (uint256) {
     require(
       index < ERC721Upgradeable.balanceOf(owner),
       "ERC721Enumerable: owner index out of bounds"
@@ -75,13 +74,9 @@ abstract contract ERC721EnumerableUpgradeable is
   /**
    * @dev See {IERC721Enumerable-tokenByIndex}.
    */
-  function tokenByIndex(uint256 index)
-    public
-    view
-    virtual
-    override
-    returns (uint256)
-  {
+  function tokenByIndex(
+    uint256 index
+  ) public view virtual override returns (uint256) {
     require(
       index < ERC721EnumerableUpgradeable.totalSupply(),
       "ERC721Enumerable: global index out of bounds"
@@ -151,9 +146,10 @@ abstract contract ERC721EnumerableUpgradeable is
    * @param from address representing the previous owner of the given token ID
    * @param tokenId uint256 ID of the token to be removed from the tokens list of the given address
    */
-  function _removeTokenFromOwnerEnumeration(address from, uint256 tokenId)
-    private
-  {
+  function _removeTokenFromOwnerEnumeration(
+    address from,
+    uint256 tokenId
+  ) private {
     // To prevent a gap in from's tokens array, we store the last token in the index of the token to delete, and
     // then delete the last slot (swap and pop).
 

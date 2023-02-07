@@ -49,11 +49,9 @@ library StorageSlot {
   /**
    * @dev Returns an `AddressSlot` with member `value` located at `slot`.
    */
-  function getAddressSlot(bytes32 slot)
-    internal
-    pure
-    returns (AddressSlot storage r)
-  {
+  function getAddressSlot(
+    bytes32 slot
+  ) internal pure returns (AddressSlot storage r) {
     assembly {
       r.slot := slot
     }
@@ -62,11 +60,9 @@ library StorageSlot {
   /**
    * @dev Returns an `BooleanSlot` with member `value` located at `slot`.
    */
-  function getBooleanSlot(bytes32 slot)
-    internal
-    pure
-    returns (BooleanSlot storage r)
-  {
+  function getBooleanSlot(
+    bytes32 slot
+  ) internal pure returns (BooleanSlot storage r) {
     assembly {
       r.slot := slot
     }
@@ -75,11 +71,9 @@ library StorageSlot {
   /**
    * @dev Returns an `Bytes32Slot` with member `value` located at `slot`.
    */
-  function getBytes32Slot(bytes32 slot)
-    internal
-    pure
-    returns (Bytes32Slot storage r)
-  {
+  function getBytes32Slot(
+    bytes32 slot
+  ) internal pure returns (Bytes32Slot storage r) {
     assembly {
       r.slot := slot
     }
@@ -88,11 +82,9 @@ library StorageSlot {
   /**
    * @dev Returns an `Uint256Slot` with member `value` located at `slot`.
    */
-  function getUint256Slot(bytes32 slot)
-    internal
-    pure
-    returns (Uint256Slot storage r)
-  {
+  function getUint256Slot(
+    bytes32 slot
+  ) internal pure returns (Uint256Slot storage r) {
     assembly {
       r.slot := slot
     }
