@@ -1040,6 +1040,17 @@ contract Comptroller is
     // Check caller is admin
     require(msg.sender == admin, "only admin can set close factor");
 
+    if (
+      newCloseFactorMantissa <= closeFactorMinMantissa ||
+      newCloseFactorMantissa > closeFactorMaxMantissa
+    ) {
+      return
+        fail(
+          Error.INVALID_CLOSE_FACTOR,
+          FailureInfo.SET_CLOSE_FACTOR_VALIDATION
+        );
+    }
+
     uint oldCloseFactorMantissa = closeFactorMantissa;
     closeFactorMantissa = newCloseFactorMantissa;
     emit NewCloseFactor(oldCloseFactorMantissa, closeFactorMantissa);
@@ -1081,6 +1092,22 @@ contract Comptroller is
     // Check collateral factor <= 0.9
     Exp memory highLimit = Exp({mantissa: collateralFactorMaxMantissa});
     if (lessThanExp(highLimit, newCollateralFactorExp)) {
+      return
+        fail(
+          Error.INVALID_COLLATERAL_FACTOR,
+          FailureInfo.SET_COLLATERAL_FACTOR_VALIDATION
+        );
+    }
+
+    if (
+      greaterThanExp(
+        mul_(
+          newCollateralFactorExp,
+          Exp({mantissa: liquidationIncentiveMantissa})
+        ),
+        Exp({mantissa: mantissaOne})
+      )
+    ) {
       return
         fail(
           Error.INVALID_COLLATERAL_FACTOR,
@@ -1133,6 +1160,35 @@ contract Comptroller is
 
     // Save current value for use in log
     uint oldLiquidationIncentiveMantissa = liquidationIncentiveMantissa;
+
+    if (newLiquidationIncentiveMantissa < mantissaOne) {
+      return
+        fail(
+          Error.INVALID_LIQUIDATION_INCENTIVE,
+          FailureInfo.SET_LIQUIDATION_INCENTIVE_VALIDATION
+        );
+    }
+
+    for (uint i = 0; i < allMarkets.length; i++) {
+      Exp memory collateralFactorExp = Exp({
+        mantissa: markets[address(allMarkets[i])].collateralFactorMantissa
+      });
+      if (
+        greaterThanExp(
+          mul_(
+            collateralFactorExp,
+            Exp({mantissa: newLiquidationIncentiveMantissa})
+          ),
+          Exp({mantissa: mantissaOne})
+        )
+      ) {
+        return
+          fail(
+            Error.INVALID_LIQUIDATION_INCENTIVE,
+            FailureInfo.SET_LIQUIDATION_INCENTIVE_VALIDATION
+          );
+      }
+    }
 
     // Set liquidation incentive to new incentive
     liquidationIncentiveMantissa = newLiquidationIncentiveMantissa;
