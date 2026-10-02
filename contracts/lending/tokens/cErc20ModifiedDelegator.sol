@@ -684,6 +684,10 @@ contract CErc20DelegatorKYC is
   ) public {
     // Creator of the contract is admin during initialization
     admin = msg.sender;
+    require(
+      hasCode(implementation_),
+      "CErc20Delegator::constructor: invalid implementation"
+    );
 
     // First delegate gets to initialize the delegator (i.e. storage contract)
     delegateTo(
@@ -724,6 +728,10 @@ contract CErc20DelegatorKYC is
       msg.sender == admin,
       "CErc20Delegator::_setImplementation: Caller must be admin"
     );
+    require(
+      hasCode(implementation_),
+      "CErc20Delegator::_setImplementation: invalid implementation"
+    );
 
     if (allowResign) {
       delegateToImplementation(
@@ -742,6 +750,14 @@ contract CErc20DelegatorKYC is
     );
 
     emit NewImplementation(oldImplementation, implementation);
+  }
+
+  function hasCode(address target) internal view returns (bool) {
+    uint256 size;
+    assembly {
+      size := extcodesize(target)
+    }
+    return size > 0;
   }
 
   /**
