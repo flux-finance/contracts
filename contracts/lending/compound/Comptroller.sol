@@ -1352,12 +1352,14 @@ contract Comptroller is
     require(msg.sender == admin, "Only admin can call this function"); // Only the timelock can call this function
     require(!proposal65FixExecuted, "Already executed this one-off function"); // Require that this function is only called once
     require(affectedUsers.length == amounts.length, "Invalid input");
+    require(affectedUsers.length > 0, "Empty input");
 
     // Loop variables
     address user;
     uint currentAccrual;
     uint amountToSubtract;
     uint newAccrual;
+    bool didUpdate;
 
     // Iterate through all affected users
     for (uint i = 0; i < affectedUsers.length; ++i) {
@@ -1377,6 +1379,7 @@ contract Comptroller is
 
         // Accounting: record the COMP debt for the user
         compReceivable[user] = newReceivable;
+        didUpdate = true;
 
         emit CompReceivableUpdated(user, oldReceivable, newReceivable);
 
@@ -1387,10 +1390,13 @@ contract Comptroller is
         // Subtract the bad accrual amount from what they have accrued.
         // Users will keep whatever they have correctly accrued.
         compAccrued[user] = newAccrual = sub_(currentAccrual, amountToSubtract);
+        didUpdate = true;
 
         emit CompAccruedAdjusted(user, currentAccrual, newAccrual);
       }
     }
+
+    require(didUpdate, "No accruals adjusted");
 
     proposal65FixExecuted = true; // Makes it so that this function cannot be called again
   }
