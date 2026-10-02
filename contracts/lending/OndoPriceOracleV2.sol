@@ -48,6 +48,8 @@ interface IERC20Like {
  *         set a price ceiling (a.k.a "cap") on an fToken's underlying asset.
  */
 contract OndoPriceOracleV2 is IOndoPriceOracleV2, Ownable {
+  uint256 public constant MAX_CHAINLINK_ORACLE_TIME_DELAY = 2 days;
+
   /// @notice Initially set to contracts/lending/compound/uniswap/UniswapAnchoredView.sol
   CTokenOracle public cTokenOracle =
     CTokenOracle(0x50ce56A3239671Ab62f185704Caedf626352741e);
@@ -268,6 +270,10 @@ contract OndoPriceOracleV2 is IOndoPriceOracleV2, Ownable {
       fTokenToOracleType[fToken] == OracleType.CHAINLINK,
       "OracleType must be Chainlink"
     );
+    require(
+      maxChainlinkOracleTimeDelay <= MAX_CHAINLINK_ORACLE_TIME_DELAY,
+      "Chainlink oracle delay too large"
+    );
     address underlying = CTokenLike(fToken).underlying();
     fTokenToChainlinkOracle[fToken].scaleFactor = (10 **
       (36 -
@@ -305,8 +311,8 @@ contract OndoPriceOracleV2 is IOndoPriceOracleV2, Ownable {
     ) = chainlinkInfo.oracle.latestRoundData();
     require(
       (answeredInRound >= roundId) &&
-        (updatedAt >=
-          block.timestamp - chainlinkInfo.maxChainlinkOracleTimeDelay),
+        (updatedAt + chainlinkInfo.maxChainlinkOracleTimeDelay >=
+          block.timestamp),
       "Chainlink oracle price is stale"
     );
     require(answer >= 0, "Price cannot be negative");
