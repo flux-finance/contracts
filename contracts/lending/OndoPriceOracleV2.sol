@@ -269,10 +269,11 @@ contract OndoPriceOracleV2 is IOndoPriceOracleV2, Ownable {
       "OracleType must be Chainlink"
     );
     address underlying = CTokenLike(fToken).underlying();
+    uint256 underlyingDecimals = uint256(IERC20Like(underlying).decimals());
+    uint256 oracleDecimals = uint256(AggregatorV3Interface(chainlinkOracle).decimals());
+    require(36 >= underlyingDecimals + oracleDecimals, "Decimals overflow 36");
     fTokenToChainlinkOracle[fToken].scaleFactor = (10 **
-      (36 -
-        uint256(IERC20Like(underlying).decimals()) -
-        uint256(AggregatorV3Interface(chainlinkOracle).decimals())));
+      (36 - underlyingDecimals - oracleDecimals));
     fTokenToChainlinkOracle[fToken].oracle = AggregatorV3Interface(
       chainlinkOracle
     );
@@ -309,7 +310,7 @@ contract OndoPriceOracleV2 is IOndoPriceOracleV2, Ownable {
           block.timestamp - chainlinkInfo.maxChainlinkOracleTimeDelay),
       "Chainlink oracle price is stale"
     );
-    require(answer >= 0, "Price cannot be negative");
+    require(answer > 0, "Price must be positive");
     // Scale to decimals needed in Comptroller (18 decimal underlying -> 18 decimals; 6 decimal underlying -> 30 decimals)
     // Scales by same conversion factor as in Compound Oracle
     return uint256(answer) * chainlinkInfo.scaleFactor;
