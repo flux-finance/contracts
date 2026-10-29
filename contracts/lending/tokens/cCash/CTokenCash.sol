@@ -933,11 +933,12 @@ abstract contract CTokenCash is
       "LIQUIDATE_COMPTROLLER_CALCULATE_AMOUNT_SEIZE_FAILED"
     );
 
-    /* Revert if borrower collateral token balance < seizeTokens */
-    require(
-      cTokenCollateral.balanceOf(borrower) >= seizeTokens,
-      "LIQUIDATE_SEIZE_TOO_MUCH"
-    );
+    /* Clamp seizeTokens to borrower's available collateral balance to prevent bad debt freeze */
+    uint borrowerCollateral = cTokenCollateral.balanceOf(borrower);
+    if (seizeTokens > borrowerCollateral) {
+      seizeTokens = borrowerCollateral;
+    }
+    require(seizeTokens > 0, "NO_COLLATERAL_AVAILABLE");
 
     // If this is also the collateral, run seizeInternal to avoid re-entrancy, otherwise make an external call
     if (address(cTokenCollateral) == address(this)) {
