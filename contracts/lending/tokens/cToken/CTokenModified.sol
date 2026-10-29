@@ -998,7 +998,6 @@ abstract contract CTokenModified is
       !sanctionsList.isSanctioned(liquidator),
       "Liquidator is sanctioned"
     );
-    require(!sanctionsList.isSanctioned(borrower), "Borrower is sanctioned");
 
     /* Fail if seize not allowed */
     uint allowed = comptroller.seizeAllowed(
