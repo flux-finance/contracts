@@ -30,10 +30,14 @@ interface CTokenLike {
   function underlying() external view returns (address);
 }
 
-/// @notice Helper interface for interacting with underlying assets
-///         that are ERC20 compliant
 interface IERC20Like {
   function decimals() external view returns (uint8);
+}
+
+/// @notice Helper interface for querying Chainlink aggregator circuit breaker limits
+interface IAggregatorLike {
+  function minAnswer() external view returns (int256);
+  function maxAnswer() external view returns (int256);
 }
 
 /**
@@ -309,7 +313,21 @@ contract OndoPriceOracleV2 is IOndoPriceOracleV2, Ownable {
           block.timestamp - chainlinkInfo.maxChainlinkOracleTimeDelay),
       "Chainlink oracle price is stale"
     );
-    require(answer >= 0, "Price cannot be negative");
+    require(answer > 0, "Price must be positive");
+    try IAggregatorLike(address(chainlinkInfo.oracle)).minAnswer() returns (
+      int256 minAnswer
+    ) {
+      if (minAnswer > 0) {
+        require(answer > minAnswer, "Chainlink minAnswer circuit breaker hit");
+      }
+    } catch {}
+    try IAggregatorLike(address(chainlinkInfo.oracle)).maxAnswer() returns (
+      int256 maxAnswer
+    ) {
+      if (maxAnswer > 0) {
+        require(answer < maxAnswer, "Chainlink maxAnswer circuit breaker hit");
+      }
+    } catch {}
     // Scale to decimals needed in Comptroller (18 decimal underlying -> 18 decimals; 6 decimal underlying -> 30 decimals)
     // Scales by same conversion factor as in Compound Oracle
     return uint256(answer) * chainlinkInfo.scaleFactor;
