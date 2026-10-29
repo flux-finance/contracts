@@ -93,6 +93,9 @@ abstract contract CTokenCash is
     address dst,
     uint tokens
   ) internal returns (uint) {
+    /* Reject transfer to zero address */
+    require(dst != address(0), "transfer to zero address");
+
     /* Revert if KYC not valid */
     require(_getKYCStatus(spender), "Spender not KYC'd");
     require(_getKYCStatus(src), "Source not KYC'd");

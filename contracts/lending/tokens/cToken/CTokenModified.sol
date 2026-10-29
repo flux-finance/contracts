@@ -93,6 +93,9 @@ abstract contract CTokenModified is
     address dst,
     uint tokens
   ) internal returns (uint) {
+    /* Reject transfer to zero address */
+    require(dst != address(0), "transfer to zero address");
+
     /* Revert if sanctioned */
     require(!sanctionsList.isSanctioned(spender), "Spender is sanctioned");
     require(!sanctionsList.isSanctioned(src), "Source is sanctioned");
