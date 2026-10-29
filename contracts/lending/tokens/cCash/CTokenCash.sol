@@ -771,7 +771,6 @@ abstract contract CTokenCash is
   ) internal returns (uint) {
     /* Revert if not KYC'd */
     require(_getKYCStatus(payer), "Payer not KYC'd");
-    require(_getKYCStatus(borrower), "Borrower not KYC'd");
 
     /* Fail if repayBorrow not allowed */
     uint allowed = comptroller.repayBorrowAllowed(
