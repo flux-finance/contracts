@@ -677,6 +677,9 @@ abstract contract CTokenModified is
    * @param borrowAmount The amount of the underlying asset to borrow
    */
   function borrowFresh(address payable borrower, uint borrowAmount) internal {
+    /* Revert if sanctioned */
+    require(!sanctionsList.isSanctioned(borrower), "Borrower is sanctioned");
+
     /* Revert if borrower not KYC'd */
     require(_getKYCStatus(borrower), "Borrower not KYC'd");
 
